@@ -9,6 +9,6 @@ class List < ApplicationRecord
   validates :name, length: { maximum: 100 }
 
   def content
-    content_lists.includes(:content).map(&:content)
+    content_lists.includes(:content).order(:position).map(&:content)
   end
 end
