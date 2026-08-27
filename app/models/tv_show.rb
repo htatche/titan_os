@@ -1,6 +1,8 @@
 class TvShow < ApplicationRecord
-  has_many :seasons
-  has_many :episodes, :through => :season
+  include MediaValidation
+
+  has_many :seasons, dependent: :destroy
+  has_many :episodes, through: :seasons, dependent: :destroy
 
   has_many :content_lists, as: :content
   has_many :lists, through: :content_lists

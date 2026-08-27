@@ -6,6 +6,8 @@ class List < ApplicationRecord
   has_many :seasons, through: :content_lists, source: :content, source_type: 'Season'
   has_many :episodes, through: :content_lists, source: :content, source_type: 'Episode'
 
+  validates :name, length: { maximum: 100 }
+
   def content
     content_lists.includes(:content).map(&:content)
   end
