@@ -6,6 +6,4 @@ class Season < ApplicationRecord
   has_many :lists, through: :content_lists
 
   validates :position, numericality: { only_integer: true }
-
-  def canonical_number = "#{self.class.name} #{self.position}"
 end

@@ -7,14 +7,15 @@ class ListsController < ApplicationController
     end
 
     list = List.find(params[:id])
-    data = data(list)
+    content_lists = filter_content(list)
+    content_lists = paginate_content(content_lists) if params.key?(:page)
 
     json = {
       json: {
         list:
           {
             name: list.name,
-            data: data
+            contents: content_lists.map { |content_list| ContentSerializer.new(content_list.content) }
           }
       }
     }
@@ -22,25 +23,13 @@ class ListsController < ApplicationController
     json[:json][:pagination] = {
       page: params[:page],
       per_page: params[:per_page],
-      total: data.size
+      # total: data.size
     } if params.key?(:page)
 
     render json
   end
 
   private
-
-  def data(list)
-    data = filter_content(list)
-    data = paginate_content(data) if params.key?(:page)
-
-    data.map do |content_list|
-      attrs = content_list.content.as_json.with_indifferent_access.merge(type: content_list.content.class.name.underscore)
-      attrs = attrs.merge(number: content_list.content.canonical_number) if content_list.content.respond_to?(:canonical_number)
-
-      attrs.slice(:number, :title, :original_title, :year, :type)
-    end
-  end
 
   def filter_content(list)
     result = list.content_lists.includes(:content).order(:position)
