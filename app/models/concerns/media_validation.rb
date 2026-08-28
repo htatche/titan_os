@@ -10,11 +10,11 @@ module MediaValidation
     # Movies and TV started in the late 1800's, early 1900's respectively
     validates :year, numericality: { in: (START_OF_SCREEN_ERA..Date.today.year + 5) }
 
-    def is_season?
+    def season?
       self.is_a?(Season)
     end
 
-    def is_episode?
+    def episode?
       self.is_a?(Episode)
     end
   end

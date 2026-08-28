@@ -15,7 +15,7 @@ class ContentSerializer
       type: content.class.name.underscore
     }
 
-    json = json.merge(number: "#{content.class.name} #{content.position}") if content.is_a?(Episode) || content.is_a?(Season)
+    json = json.merge(number: "#{content.class.name} #{content.position}") if content.season? || content.episode?
 
     json
   end
