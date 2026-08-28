@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContentSerializer
   attr_accessor :content
 

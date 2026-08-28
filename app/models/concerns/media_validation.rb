@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MediaValidation
   START_OF_SCREEN_ERA = 1800
 
