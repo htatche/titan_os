@@ -6,11 +6,4 @@ class List < ApplicationRecord
   has_many :episodes, through: :content_lists, source: :content, source_type: 'Episode'
 
   validates :name, length: { maximum: 100 }
-
-  def content(type = nil)
-    content = content_lists.includes(:content)
-    content = content.where(content_type: type.capitalize) if type.present?
-
-    content.order(:position).map(&:content)
-  end
 end
