@@ -9,16 +9,11 @@ class ListsController < ApplicationController
     end
 
     list = List.find(params[:id])
-    content_lists = content_lists(list)
-    content_lists = paginate(content_lists) if params.key?(:page)
+    result = paginate(content_lists(list))
 
-    render json: {
-      list:
-        {
-          name: list.name,
-          contents: content_lists
-        }
-    }
+    result[:data] = result[:data].map { |item| serialize(item) }
+
+    render json: { list: { name: list.name, contents: result } }
   end
 
   private
@@ -26,7 +21,6 @@ class ListsController < ApplicationController
   def content_lists(list)
     result = list.content_lists.includes(:content).order(:position)
     result = result.where(content_type: params[:content_type].capitalize) if params.key?(:content_type)
-
     result
   end
 

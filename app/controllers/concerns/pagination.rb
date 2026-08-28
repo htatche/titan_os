@@ -13,7 +13,7 @@ module Pagination
   attr_accessor :page, :per_page
 
   def paginate(collection)
-    return collection unless params[:page].present?
+    return { data: collection } unless params[:page].present?
 
     @page = 1 if @page < 1
     @per_page = PER_PAGE if @per_page < 1
@@ -22,7 +22,7 @@ module Pagination
     total = collection.count
 
     {
-      data: data(collection).map { |content_list| serialize(content_list) },
+      data: data(collection),
       pagination: {
         page: page,
         per_page: @per_page,
@@ -35,8 +35,9 @@ module Pagination
   def data(collection)
     collection.offset((page - 1) * @per_page).limit(@per_page)
   end
+
   def serialize(content_list)
-    ContentSerializer.new(content_list.content)
+    ContentSerializer.new(content_list.content).as_json
   end
 
   def set_pagination_params
