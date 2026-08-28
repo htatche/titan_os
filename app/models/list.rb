@@ -1,6 +1,5 @@
 class List < ApplicationRecord
   has_many :content_lists
-
   has_many :tv_shows, through: :content_lists, source: :content, source_type: 'TvShow'
   has_many :movies, through: :content_lists, source: :content, source_type: 'Movie'
   has_many :seasons, through: :content_lists, source: :content, source_type: 'Season'
@@ -8,7 +7,10 @@ class List < ApplicationRecord
 
   validates :name, length: { maximum: 100 }
 
-  def content
-    content_lists.includes(:content).order(:position).map(&:content)
+  def content(type = nil)
+    content = content_lists.includes(:content)
+    content = content.where(content_type: type.capitalize) if type.present?
+
+    content.order(:position).map(&:content)
   end
 end
