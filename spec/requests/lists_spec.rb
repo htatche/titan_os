@@ -54,18 +54,33 @@ RSpec.describe "Lists", type: :request do
 
       expect(response).to have_http_status(:ok)
 
-      json = JSON.parse(response.body)
-
-      expect(json["list"]["name"]).to eq("My List")
-      expect(json["list"]["contents"]["data"].size).to eq(4)
-    end
-
-    it "serializes the contents" do
-      get "/lists/#{list.id}"
-
-      contents = JSON.parse(response.body)["list"]["contents"]["data"]
-
-      expect(contents.map { |content| content["type"] }).to eq([ "movie", "season", "episode", "tv_show" ])
+      expect(JSON.parse(response.body)).to match(
+                                             "list" => {
+                                               "name" => "My List",
+                                               "contents" => {
+                                                 "data" => [
+                                                   hash_including(
+                                                     "title" => "Alien",
+                                                     "type" => "movie"
+                                                   ),
+                                                   hash_including(
+                                                     "title" => "The Beginning",
+                                                     "type" => "season",
+                                                     "number" => "Season 1"
+                                                   ),
+                                                   hash_including(
+                                                     "title" => "Pilot",
+                                                     "type" => "episode",
+                                                     "number" => "Episode 1"
+                                                   ),
+                                                   hash_including(
+                                                     "title" => "Test Show",
+                                                     "type" => "tv_show"
+                                                   )
+                                                 ]
+                                               }
+                                             }
+                                           )
     end
 
     it "preserves list order" do
@@ -85,6 +100,19 @@ RSpec.describe "Lists", type: :request do
 
       expect(contents.size).to eq(1)
       expect(contents.first["type"]).to eq("movie")
+    end
+
+    context "when content type has an underscore" do
+      it "filters by content type correctly" do
+        get "/lists/#{list.id}", params: { content_type: "tv_show" }
+
+        expect(response).to have_http_status(:ok)
+
+        contents = JSON.parse(response.body)["list"]["contents"]["data"]
+
+        expect(contents.size).to eq(1)
+        expect(contents.first["type"]).to eq("tv_show")
+      end
     end
 
     it "rejects an invalid content type" do
