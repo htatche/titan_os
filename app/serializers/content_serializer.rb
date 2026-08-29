@@ -15,8 +15,14 @@ class ContentSerializer
       type: content.class.name.underscore
     }
 
-    json = json.merge(number: "#{content.class.name} #{content.position}") if content.season? || content.episode?
+    json = json.merge(number: "#{content.class.name} #{content.position}") if canonical_number?
 
     json
+  end
+
+  private
+
+  def canonical_number?
+    content.respond_to?(:position)
   end
 end

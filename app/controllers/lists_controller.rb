@@ -9,7 +9,7 @@ class ListsController < ApplicationController
     end
 
     list = List.find(params[:id])
-    result = paginate(content_lists(list))
+    result = paginate(scope(list.content_lists))
 
     result[:data] = result[:data].map { |item| serialize(item) }
 
@@ -18,17 +18,17 @@ class ListsController < ApplicationController
 
   private
 
-  def content_lists(list)
-    result = list.content_lists.includes(:content).order(:position)
-    result = result.where(content_type: params[:content_type].capitalize) if params.key?(:content_type)
-    result
-  end
+  def scope(content_lists)
+    content_lists = content_lists.where(content_type: params[:content_type].camelize) if params.key?(:content_type)
 
-  def permitted_content_types
-    %w[tv_show movie season episode]
+    content_lists.order(:position)
   end
 
   def valid_content_type?
     params[:content_type].in?(permitted_content_types)
+  end
+
+  def permitted_content_types
+    %w[tv_show movie season episode]
   end
 end

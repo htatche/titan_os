@@ -65,9 +65,7 @@ RSpec.describe "Lists", type: :request do
 
       contents = JSON.parse(response.body)["list"]["contents"]["data"]
 
-      expect(contents.map { |content| content["type"] }).to eq(
-                                                              [ "movie", "season", "episode", "tv_show" ]
-                                                            )
+      expect(contents.map { |content| content["type"] }).to eq([ "movie", "season", "episode", "tv_show" ])
     end
 
     it "preserves list order" do
@@ -75,9 +73,7 @@ RSpec.describe "Lists", type: :request do
 
       contents = JSON.parse(response.body)["list"]["contents"]["data"]
 
-      expect(contents.map { |content| content["title"] }).to eq(
-                                                               [ "Alien", "The Beginning", "Pilot", "Test Show" ]
-                                                             )
+      expect(contents.map { |content| content["title"] }).to eq([ "Alien", "The Beginning", "Pilot", "Test Show" ])
     end
 
     it "filters by content type" do
@@ -98,9 +94,7 @@ RSpec.describe "Lists", type: :request do
 
       json = JSON.parse(response.body)
 
-      expect(json["error"]).to eq(
-                                 "Valid content_types: tv_show, movie, season, episode"
-                               )
+      expect(json["error"]).to eq("Valid content_types: tv_show, movie, season, episode")
     end
 
     it "paginates when page is provided" do
