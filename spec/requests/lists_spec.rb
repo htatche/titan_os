@@ -79,12 +79,12 @@ RSpec.describe "Lists", type: :request do
                                                    hash_including(
                                                      "title" => "The Beginning",
                                                      "type" => "season",
-                                                     "number" => "Season 1"
+                                                     "number" => 1
                                                    ),
                                                    hash_including(
                                                      "title" => "Pilot",
                                                      "type" => "episode",
-                                                     "number" => "Episode 1"
+                                                     "number" => 1
                                                    ),
                                                    hash_including(
                                                      "title" => "Test Show",

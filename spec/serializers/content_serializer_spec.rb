@@ -43,7 +43,7 @@ RSpec.describe ContentSerializer do
       subject(:json) { described_class.new(season).as_json }
 
       it "includes the season number" do
-        expect(json[:number]).to eq("Season 1")
+        expect(json[:number]).to eq(1)
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe ContentSerializer do
       subject(:json) { described_class.new(episode).as_json }
 
       it "includes the episode number" do
-        expect(json[:number]).to eq("Episode 3")
+        expect(json[:number]).to eq(3)
       end
     end
   end

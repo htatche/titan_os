@@ -15,7 +15,7 @@ class ContentSerializer
       type: content.class.name.underscore
     }
 
-    json = json.merge(number: "#{content.class.name} #{content.position}") if canonical_number?
+    json = json.merge(number: content.position) if canonical_number?
 
     json
   end
