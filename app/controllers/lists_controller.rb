@@ -19,6 +19,7 @@ class ListsController < ApplicationController
   private
 
   def scope(content_lists)
+    content_lists = content_lists.includes(:content)
     content_lists = content_lists.where(content_type: params[:content_type].camelize) if params.key?(:content_type)
 
     content_lists.order(:position)
