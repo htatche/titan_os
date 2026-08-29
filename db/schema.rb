@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_27_045533) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_042122) do
   create_table "content_lists", force: :cascade do |t|
     t.integer "content_id", null: false
     t.string "content_type", null: false
@@ -19,6 +19,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_045533) do
     t.integer "position"
     t.datetime "updated_at", null: false
     t.index ["content_type", "content_id"], name: "index_content_lists_on_content"
+    t.index ["content_type", "content_id"], name: "index_content_lists_on_content_type_and_content_id"
+    t.index ["list_id", "content_type", "position"], name: "index_content_lists_on_list_id_and_content_type_and_position"
+    t.index ["list_id", "position"], name: "index_content_lists_on_list_id_and_position"
     t.index ["list_id"], name: "index_content_lists_on_list_id"
   end
 
