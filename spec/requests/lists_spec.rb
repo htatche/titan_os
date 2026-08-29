@@ -46,6 +46,19 @@ RSpec.describe "Lists", type: :request do
     list.content_lists.create!(content: season, position: 2)
     list.content_lists.create!(content: episode, position: 3)
     list.content_lists.create!(content: tv_show, position: 4)
+
+    8.times do |i|
+      movie = Movie.create!(
+        title: "Movie #{i + 2}",
+        original_title: "Movie #{i + 2}",
+        year: 2000 + i
+      )
+
+      list.content_lists.create!(
+        content: movie,
+        position: i + 5
+      )
+    end
   end
 
   describe "GET /lists/:id" do
@@ -58,7 +71,7 @@ RSpec.describe "Lists", type: :request do
                                              "list" => {
                                                "name" => "My List",
                                                "contents" => {
-                                                 "data" => [
+                                                 "data" => array_including(
                                                    hash_including(
                                                      "title" => "Alien",
                                                      "type" => "movie"
@@ -77,7 +90,7 @@ RSpec.describe "Lists", type: :request do
                                                      "title" => "Test Show",
                                                      "type" => "tv_show"
                                                    )
-                                                 ]
+                                                 )
                                                }
                                              }
                                            )
@@ -88,7 +101,7 @@ RSpec.describe "Lists", type: :request do
 
       contents = JSON.parse(response.body)["list"]["contents"]["data"]
 
-      expect(contents.map { |content| content["title"] }).to eq([ "Alien", "The Beginning", "Pilot", "Test Show" ])
+      expect(contents.first(4).map { |content| content["title"] }).to eq([ "Alien", "The Beginning", "Pilot", "Test Show" ])
     end
 
     it "filters by content type" do
@@ -98,8 +111,8 @@ RSpec.describe "Lists", type: :request do
 
       contents = JSON.parse(response.body)["list"]["contents"]["data"]
 
-      expect(contents.size).to eq(1)
-      expect(contents.first["type"]).to eq("movie")
+      expect(contents.size).to eq(9)
+      expect(contents).to all(include("type" => "movie"))
     end
 
     context "when content type has an underscore" do
@@ -120,9 +133,7 @@ RSpec.describe "Lists", type: :request do
 
       expect(response).to have_http_status(:bad_request)
 
-      json = JSON.parse(response.body)
-
-      expect(json["error"]).to eq("Valid content_types: tv_show, movie, season, episode")
+      expect(JSON.parse(response.body)["error"]).to eq("Valid content_types: tv_show, movie, season, episode")
     end
 
     it "paginates when page is provided" do
@@ -132,12 +143,12 @@ RSpec.describe "Lists", type: :request do
 
       contents = JSON.parse(response.body)["list"]["contents"]
 
-      expect(contents["data"].size).to eq(1)
+      expect(contents["data"].size).to eq(2)
       expect(contents["pagination"]).to eq(
                                           "page" => 2,
-                                          "per_page" => 3,
+                                          "per_page" => 10,
                                           "pages" => 2,
-                                          "total" => 4
+                                          "total" => 12
                                         )
     end
 
@@ -147,13 +158,17 @@ RSpec.describe "Lists", type: :request do
         per_page: 2
       }
 
+      expect(response).to have_http_status(:ok)
+
       contents = JSON.parse(response.body)["list"]["contents"]
 
       expect(contents["data"].size).to eq(2)
-      expect(contents["pagination"]["page"]).to eq(1)
-      expect(contents["pagination"]["per_page"]).to eq(2)
-      expect(contents["pagination"]["pages"]).to eq(2)
-      expect(contents["pagination"]["total"]).to eq(4)
+      expect(contents["pagination"]).to eq(
+                                          "page" => 1,
+                                          "per_page" => 2,
+                                          "pages" => 6,
+                                          "total" => 12
+                                        )
     end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Pagination
-  PER_PAGE = 3
+  PER_PAGE = 10
   MAX_PER_PAGE = 100
 
   extend ActiveSupport::Concern
@@ -13,7 +13,7 @@ module Pagination
   attr_accessor :page, :per_page
 
   def paginate(collection)
-    return { data: collection } unless params[:page].present?
+    return { data: collection } unless params[:page].present? || params[:per_page].present?
 
     @page = 1 if @page < 1
     @per_page = PER_PAGE if @per_page < 1
