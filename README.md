@@ -3,13 +3,16 @@
 ## How to install the application
 
 ```
-rbenv install ruby 4.0.6 # in case you don't have this version
+rbenv install 4.0.6 # in case you don't have this version
 bundle install
 rails db:migrate
 rails db:seed
 
 # Start the server
 rails s 
+
+# Open the app
+http://localhost:3000/lists/1 
 ```
 
 ## How to use the application
@@ -56,7 +59,7 @@ sqlite3
 ## Assumptions
 
 - I have assumed that the list ordering decides on the order of items within that list as I thought that was the logical approach.
-Still, seasons and episodes do have their own order.
+Still, seasons and episodes do have their own canonical number as it's logical too although we're not using it.
 - I haven't added any extra fields to the models as I thought that wasn't relevant to the exercise and I was lacking on time. I can imagine **at least** the following:
   ```ruby
     add_column :movies, :runtime, :integer
@@ -66,9 +69,8 @@ Still, seasons and episodes do have their own order.
 
 ## Further improvements
 
-- Return a 204 (No Content) when requesting a page that doesn't exist
 - Improve the metadada in the result set:
-  - e.g. Add a reference to the parent in the case of episodes/seasons to understand the relation between the item and its parent
+  - e.g. Add a reference to the parent in the case of episodes/seasons to understand the relationship between the item and its parent
     ```json
     {
       "title": "Aftermath",
@@ -90,6 +92,9 @@ Still, seasons and episodes do have their own order.
       }
     }
     ```
+- Maybe return a 204 (No Content) when requesting a page that doesn't exist
+- The `title` attr is language-dependant, so we'd have to add i18n to make it real, then use it through `?lang=es` for example.
+- I wonder if `content_type` could be confusing from a developer perspective i.e. [Content-Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Type). Maybe `media_type` instead to avoid confusion?
 
 ## Use of AI
 
